@@ -558,7 +558,15 @@ rs();addEventListener("resize",rs);const clouds=Array.from({length:7},(_,i)=>({x
 
 /* =============== audio =============== */
 const A={ctx:null,master:null,muted:false,bgm:null,hb:null};
-function audioInit(){if(A.ctx)return;A.ctx=new (window.AudioContext||window.webkitAudioContext)();A.master=A.ctx.createGain();A.master.gain.value=A.muted?0:.6;A.master.connect(A.ctx.destination)}
+function audioInit(){if(A.ctx)return;
+  /* iOS: 宣告為媒體播放，讓靜音撥桿不消音（同 YouTube 行為） */
+  try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
+  /* 備援：播一段無聲循環 <audio>，強制切到媒體播放音訊類別（舊版 iOS / LINE 內建瀏覽器） */
+  try{if(!A.unmuteEl){const el=document.createElement("audio");el.setAttribute("playsinline","");el.loop=true;el.volume=.01;
+    el.src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAACAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwP//////////////////////////////////////////8AAAA5TEFNRTMuMTAwAc0AAAAAAAAAABSAJAJAQgAAgAAAASBTvXBRAAAAAAAAAAAAAAAAAAAA//sQxAADwAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQxCkDwAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+    A.unmuteEl=el;document.body.appendChild(el)}
+    A.unmuteEl.play().catch(()=>{})}catch(e){}
+  A.ctx=new (window.AudioContext||window.webkitAudioContext)();A.master=A.ctx.createGain();A.master.gain.value=A.muted?0:.6;A.master.connect(A.ctx.destination)}
 function tone({f=440,f2=null,type="sine",t=0,d=.2,v=.3,a=.005,lp=0,det=0}={}){if(!A.ctx)return;const o=A.ctx.createOscillator(),g=A.ctx.createGain(),s=A.ctx.currentTime+t;o.type=type;o.detune.value=det;o.frequency.setValueAtTime(f,s);if(f2)o.frequency.exponentialRampToValueAtTime(f2,s+d);g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(v,s+a);g.gain.exponentialRampToValueAtTime(.0001,s+d);let n=o;if(lp){const fl=A.ctx.createBiquadFilter();fl.type="lowpass";fl.frequency.value=lp;fl.Q.value=1.2;o.connect(fl);n=fl}n.connect(g).connect(A.master);o.start(s);o.stop(s+d+.05)}
 function noise({t=0,d=.15,v=.2,hp=2000}={}){if(!A.ctx)return;const s=A.ctx.currentTime+t,b=A.ctx.createBuffer(1,A.ctx.sampleRate*d,A.ctx.sampleRate),ch=b.getChannelData(0);for(let i=0;i<ch.length;i++)ch[i]=Math.random()*2-1;const src=A.ctx.createBufferSource();src.buffer=b;const f=A.ctx.createBiquadFilter();f.type="highpass";f.frequency.value=hp;const g=A.ctx.createGain();g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.0001,s+d);src.connect(f).connect(g).connect(A.master);src.start(s)}
 const SFX={
@@ -925,7 +933,7 @@ document.addEventListener("pointerdown",e=>{const b=e.target.closest("button,.ch
 $("long").onclick=()=>open(1);$("short").onclick=()=>open(-1);$("close").onclick=()=>close("manual");
 $("startBtn").onclick=()=>{if(!$("discChk").checked)return;start()};$("retryBtn").onclick=start;
 addEventListener("keydown",e=>{if(!G.running)return;if(e.key==="a"||e.key==="ArrowLeft")open(1);if(e.key==="d"||e.key==="ArrowRight")open(-1);if(e.key===" "||e.key==="s"){e.preventDefault();close("manual")}if(e.key==="p"||e.key==="Escape")pauseGame()});
-document.addEventListener("visibilitychange",()=>{if(A.ctx&&document.visibilityState==="visible"&&A.ctx.state==="suspended")A.ctx.resume()});
+document.addEventListener("visibilitychange",()=>{if(A.ctx&&document.visibilityState==="visible"){if(A.ctx.state==="suspended")A.ctx.resume();if(A.unmuteEl)A.unmuteEl.play().catch(()=>{})}});
 let savedChar="retail";try{savedChar=localStorage.getItem("kline_char")||"retail"}catch(e){}selectChar(savedChar,false);obGo(0);reset();resize();showStartRecord();requestAnimationFrame(frame);
 </script>
 </body>
