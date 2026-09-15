@@ -336,9 +336,9 @@ button,.char,#disc{transition:box-shadow .15s,filter .15s,transform .08s}
   </div>
 
   <div id="btns">
-    <button class="skill" id="long">做多<small>看漲 ▲ 買進</small></button>
-    <button class="skill" id="close" disabled>平倉<small>手動出場</small></button>
     <button class="skill" id="short">放空<small>看跌 ▼ 賣出</small></button>
+    <button class="skill" id="close" disabled>平倉<small>手動出場</small></button>
+    <button class="skill" id="long">做多<small>看漲 ▲ 買進</small></button>
   </div>
 </div>
 
@@ -378,7 +378,7 @@ button,.char,#disc{transition:box-shadow .15s,filter .15s,transform .08s}
         <li><b>4</b>每 30 秒跳出的考題卡（先預告、10 秒後公布）</li>
         <li><b>5</b>持倉方向、進場價、浮動損益</li>
         <li><b>6</b>用 ＋－ 設定停損、停利（10 點一階）與手數</li>
-        <li><b>7</b>看漲按<span class="lg">做多</span>、看跌按<span class="sh">放空</span>，想出場按<span class="cl">平倉</span></li>
+        <li><b>7</b>看跌按<span class="sh">放空</span>（左）、看漲按<span class="lg">做多</span>（右），想出場按<span class="cl">平倉</span></li>
       </ol>
       <div class="obnav"><button class="obback" data-go="1">返回</button><button class="skill big btn-silver" data-go="3">我懂了<small>NEXT</small></button></div>
     </section>
@@ -830,7 +830,7 @@ const UIMAP=`<svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" font-
 <rect x="10" y="10" width="280" height="40" rx="6"/><rect x="10" y="56" width="280" height="30" rx="6"/><rect x="10" y="92" width="280" height="160" rx="6"/><rect x="10" y="258" width="280" height="30" rx="6"/>
 <rect x="10" y="294" width="88" height="36" rx="6"/><rect x="106" y="294" width="88" height="36" rx="6"/><rect x="202" y="294" width="88" height="36" rx="6"/>
 </g>
-<rect x="10" y="338" width="88" height="44" rx="8" fill="#e8452e"/><rect x="106" y="338" width="88" height="44" rx="8" fill="#c9d6e8"/><rect x="202" y="338" width="88" height="44" rx="8" fill="#38b6ff"/>
+<rect x="10" y="338" width="88" height="44" rx="8" fill="#38b6ff"/><rect x="106" y="338" width="88" height="44" rx="8" fill="#c9d6e8"/><rect x="202" y="338" width="88" height="44" rx="8" fill="#e8452e"/>
 <text x="18" y="35" fill="#dfe9f5" font-size="12" font-weight="900">最強交易員</text><circle cx="268" cy="30" r="14" fill="none" stroke="#fff" stroke-width="3"/><text x="268" y="34" fill="#fff" font-size="9" text-anchor="middle" font-family="monospace">3:00</text>
 <text x="18" y="76" fill="#fff" font-size="12" font-family="monospace">+1250</text><text x="150" y="76" fill="#ffd48a" font-size="9" text-anchor="middle">COMBO ×3</text><text x="282" y="76" fill="#9fb2cc" font-size="9" text-anchor="end">5戰 4勝</text>
 <rect x="222" y="98" width="62" height="16" rx="3" fill="#000" stroke="#7f95b3"/><text x="253" y="110" fill="#ff6a3d" font-size="9" text-anchor="middle" font-family="monospace">2650.00</text>
@@ -840,9 +840,9 @@ const UIMAP=`<svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" font-
 <text x="54" y="307" fill="#9fb2cc" font-size="8" text-anchor="middle">停損（點）</text><text x="54" y="323" fill="#fff" font-size="11" text-anchor="middle" font-family="monospace">− 30 ＋</text>
 <text x="150" y="307" fill="#9fb2cc" font-size="8" text-anchor="middle">停利（點）</text><text x="150" y="323" fill="#fff" font-size="11" text-anchor="middle" font-family="monospace">− 50 ＋</text>
 <text x="246" y="307" fill="#9fb2cc" font-size="8" text-anchor="middle">手數（手）</text><text x="246" y="323" fill="#fff" font-size="11" text-anchor="middle" font-family="monospace">− 1 ＋</text>
-<text x="54" y="358" fill="#fff" font-size="13" font-weight="900" text-anchor="middle">做多</text><text x="54" y="372" fill="#fff" font-size="8" text-anchor="middle">看漲 ▲</text>
+<text x="54" y="358" fill="#fff" font-size="13" font-weight="900" text-anchor="middle">放空</text><text x="54" y="372" fill="#fff" font-size="8" text-anchor="middle">看跌 ▼</text>
 <text x="150" y="358" fill="#0b1220" font-size="13" font-weight="900" text-anchor="middle">平倉</text><text x="150" y="372" fill="#0b1220" font-size="8" text-anchor="middle">手動出場</text>
-<text x="246" y="358" fill="#fff" font-size="13" font-weight="900" text-anchor="middle">放空</text><text x="246" y="372" fill="#fff" font-size="8" text-anchor="middle">看跌 ▼</text>
+<text x="246" y="358" fill="#fff" font-size="13" font-weight="900" text-anchor="middle">做多</text><text x="246" y="372" fill="#fff" font-size="8" text-anchor="middle">看漲 ▲</text>
 <g font-family="monospace" font-size="11" font-weight="700">
 <circle cx="240" cy="18" r="9" fill="#ffd48a"/><text x="240" y="22" fill="#0b1220" text-anchor="middle">1</text>
 <circle cx="110" cy="70" r="9" fill="#ffd48a"/><text x="110" y="74" fill="#0b1220" text-anchor="middle">2</text>
@@ -896,8 +896,8 @@ const TUT=[
  {el:'.st[data-k="lot"]',t:"調手數",d:"按 ＋ 或 － 調整手數"},
  {el:'.st[data-k="sl"]',t:"設停損",d:"按 ＋ － 設定虧多少點就出場"},
  {el:'.st[data-k="tp"]',t:"設停利",d:"按 ＋ － 設定賺多少點就出場"},
- {el:"#long",t:"看漲就按這裡",d:"按下「做多」買進"},
  {el:"#short",t:"看跌就按這裡",d:"按下「放空」賣出"},
+ {el:"#long",t:"看漲就按這裡",d:"按下「做多」買進"},
  {el:"#close",t:"想出場",d:"按「平倉」立刻結束這筆"},
  {el:"#pos",t:"看損益",d:"進場後這裡顯示賺賠"},
  {el:"#scorebar",t:"本金與爆倉",d:"權益跌到爆倉線就輸了"},
@@ -932,7 +932,7 @@ document.addEventListener("pointerdown",e=>{const b=e.target.closest("button,.ch
 /* =============== bindings =============== */
 $("long").onclick=()=>open(1);$("short").onclick=()=>open(-1);$("close").onclick=()=>close("manual");
 $("startBtn").onclick=()=>{if(!$("discChk").checked)return;start()};$("retryBtn").onclick=start;
-addEventListener("keydown",e=>{if(!G.running)return;if(e.key==="a"||e.key==="ArrowLeft")open(1);if(e.key==="d"||e.key==="ArrowRight")open(-1);if(e.key===" "||e.key==="s"){e.preventDefault();close("manual")}if(e.key==="p"||e.key==="Escape")pauseGame()});
+addEventListener("keydown",e=>{if(!G.running)return;if(e.key==="a"||e.key==="ArrowLeft")open(-1);if(e.key==="d"||e.key==="ArrowRight")open(1);if(e.key===" "||e.key==="s"){e.preventDefault();close("manual")}if(e.key==="p"||e.key==="Escape")pauseGame()});
 document.addEventListener("visibilitychange",()=>{if(A.ctx&&document.visibilityState==="visible"){if(A.ctx.state==="suspended")A.ctx.resume();if(A.unmuteEl)A.unmuteEl.play().catch(()=>{})}});
 let savedChar="retail";try{savedChar=localStorage.getItem("kline_char")||"retail"}catch(e){}selectChar(savedChar,false);obGo(0);reset();resize();showStartRecord();requestAnimationFrame(frame);
 </script>
