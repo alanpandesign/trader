@@ -409,7 +409,9 @@ button,.char,#disc{transition:box-shadow .15s,filter .15s,transform .08s}
     <div class="sub">PAUSED</div><h2>暫停中</h2>
     <p style="margin:10px 0 16px">倒數與行情都停住了，準備好再繼續</p>
     <button class="skill big btn-silver" id="resumeBtn">繼續遊戲<small>RESUME</small></button>
-    <button class="skill big" id="quitBtn" style="background:radial-gradient(circle at 50% 120%,#ffb08a,#e8452e 40%,#6e0f1f);margin-top:10px">放棄本局，直接結算<small>GIVE UP</small></button>
+    <button class="skill big" id="restartBtn" style="background:radial-gradient(circle at 50% 120%,#d6fbff,#38b6ff 40%,#123a78);margin-top:10px">重新開局<small>RESTART</small></button>
+    <button class="skill big" id="settleBtn" style="background:radial-gradient(circle at 50% 120%,#fff6d5,#f2b93b 40%,#8a6018);color:#3a2300;margin-top:10px">結束本局，看結算<small>SETTLE</small></button>
+    <button class="skill big" id="quitBtn" style="background:radial-gradient(circle at 50% 120%,#ffb08a,#e8452e 40%,#6e0f1f);margin-top:10px">回主頁・重新選角<small>HOME</small></button>
   </div>
 </div>
 
@@ -524,10 +526,10 @@ ${EYES("#5a4a3a","#1a1208",THICKBROW)}
 ${MOUTH("#8a3b4c")}</g></svg>`};
 const heroSvg=(key)=>HEROES[key]();
 const CHARS={
- newbie:{name:"小白",en:"NEWBIE",tag:"新手練習型",perk:["本金 $3,000，爆倉線 50%","手數 0.1～1 手，小額練手感","考題公布時多提醒一句方向"],cap:3000,liq:.5,mult:1,combo:1,lot:[0.1,1,0.1],hint:false,tip:true},
- retail:{name:"一般散戶",en:"RETAIL",tag:"均衡型",perk:["本金 $10,000，爆倉線 50%","手數 1～10 手，損益 ×1","無加成、無外掛，靠手感"],cap:10000,liq:.5,mult:1,combo:1,lot:[1,10,1],hint:false},
- wolf:{name:"華爾街孤狼",en:"LONE WOLF",tag:"高風險高報酬型",perk:["本金 $8,000，爆倉線 70%（虧三成就爆）","損益 ×1.5（賺賠都放大）","COMBO 加分 ×2，手數 1～10 手"],cap:8000,liq:.7,mult:1.5,combo:2,lot:[1,10,1],hint:false},
- whale:{name:"主力",en:"BIG PLAYER",tag:"消息靈通型",perk:["本金 $50,000，爆倉線 50%","手數上限 20 手，損益 ×0.8","考題公布前 3 秒收到內線耳語（約七成準）"],cap:50000,liq:.5,mult:.8,combo:1,lot:[1,20,1],hint:true}};
+ newbie:{name:"小白",en:"NEWBIE",tag:"新手練習型",perk:["本金 $3,000，爆倉線 50%","手數 0.1～1 手，小額練手感","停損停利 10～100 點"],cap:3000,liq:.5,mult:1,combo:1,lot:[0.1,1,0.1],sltp:[10,100,10],def:{sl:20,tp:30,lot:0.5},hint:false,tip:true},
+ retail:{name:"一般散戶",en:"RETAIL",tag:"均衡型",perk:["本金 $10,000，爆倉線 50%","手數 1～10 手，損益 ×1","停損停利 10～200 點"],cap:10000,liq:.5,mult:1,combo:1,lot:[1,10,1],sltp:[10,200,10],def:{sl:30,tp:50,lot:1},hint:false},
+ wolf:{name:"華爾街孤狼",en:"LONE WOLF",tag:"高風險高報酬型",perk:["本金 $100,000，爆倉線 70%（虧三成就爆）","手數 10～100 手，損益 ×1.5","COMBO 加分 ×2，停損停利 10～300 點"],cap:100000,liq:.7,mult:1.5,combo:2,lot:[10,100,10],sltp:[10,300,10],def:{sl:50,tp:100,lot:20},hint:false},
+ whale:{name:"主力",en:"BIG PLAYER",tag:"消息靈通型",perk:["本金 $10,000,000，爆倉線 50%","手數 100～2,000 手，損益 ×0.8","內線耳語＋停損停利 20～500 點"],cap:10000000,liq:.5,mult:.8,combo:1,lot:[100,2000,100],sltp:[20,500,20],def:{sl:100,tp:200,lot:500},hint:true}};
 const CHAR_KEYS=Object.keys(CHARS);
 let CHAR=CHARS.retail;
 const VOICE={
@@ -537,8 +539,12 @@ const VOICE={
  whale:{start:"行情是我畫出來的",long:"買，把價格抬上去",short:"倒貨，讓他們接刀",winS:"零錢罷了",winB:"這波，收割完美",lossS:"一點手續費",lossB:"竟然有人跟我對做？",wave:"這波…不是我做的",q:"我早就知道結果了",last10:"十秒內清完庫存",bust:"不可能…主力也會爆倉？",idle:"散戶在想什麼，一目了然"}};
 const V=k=>VOICE[CHARKEY]&&VOICE[CHARKEY][k]||"";
 let CHARKEY="retail";
-function applyChar(key){if(!CHARS[key])key="retail";CHARKEY=key;CHAR=CHARS[key];$("hero").innerHTML=heroSvg(key);$("rhero").innerHTML=heroSvg(key);LIM.lot=CHAR.lot.slice();SET.lot=clamp(SET.lot,LIM.lot[0],LIM.lot[1]);if(CHAR.lot[2]<1)SET.lot=CHAR.lot[1];else SET.lot=Math.max(1,Math.round(SET.lot));$("lotv").textContent=fmtLot(SET.lot);$("capInfo").textContent=`本金 $${fmtMoney(CHAR.cap)}・爆倉 $${fmtMoney(CHAR.cap*CHAR.liq)}`;if(!G.running)$("score").textContent=fmtMoney(CHAR.cap);try{localStorage.setItem("kline_char",key)}catch(e){}}
-const fmtLot=v=>v<1?v.toFixed(1):String(Math.round(v));
+function snap(v,[lo,hi,st]){return Math.round(clamp(Math.round(v/st)*st,lo,hi)*10)/10}
+function applyChar(key){if(!CHARS[key])key="retail";CHARKEY=key;CHAR=CHARS[key];$("hero").innerHTML=heroSvg(key);$("rhero").innerHTML=heroSvg(key);
+  LIM.lot=CHAR.lot.slice();LIM.sl=CHAR.sltp.slice();LIM.tp=CHAR.sltp.slice();
+  SET.sl=CHAR.def.sl;SET.tp=CHAR.def.tp;SET.lot=CHAR.def.lot;
+  $("slv").textContent=SET.sl;$("tpv").textContent=SET.tp;$("lotv").textContent=fmtLot(SET.lot);$("capInfo").textContent=`本金 $${fmtMoney(CHAR.cap)}・爆倉 $${fmtMoney(CHAR.cap*CHAR.liq)}`;if(!G.running)$("score").textContent=fmtMoney(CHAR.cap);try{localStorage.setItem("kline_char",key)}catch(e){}}
+const fmtLot=v=>v<1?v.toFixed(1):Math.round(v).toLocaleString("en-US");
 const hero=$("hero");
 let heroTimer=null;
 function setHero(state,ms){hero.className=state;clearTimeout(heroTimer);if(ms)heroTimer=setTimeout(()=>{hero.className="idle"},ms)}
@@ -909,6 +915,8 @@ function pauseGame(){if(!G.running||G.paused)return;G.paused=true;G.running=fals
 function resumeGame(){if(!G.paused)return;G.paused=false;G.running=true;$("pauseOv").hidden=true;bgmStart();tickTimer=setInterval(gameTick,TICK);G.sec=setInterval(secondTick,1000);tone({f:330,f2:660,type:"triangle",d:.3,v:.15});say("繼續！",1000)}
 $("pauseBtn").onclick=pauseGame;$("resumeBtn").onclick=resumeGame;function goHome(){G.paused=false;G.running=false;G.ended=true;clearInterval(tickTimer);clearInterval(G.sec);bgmStop();$("pauseBtn").hidden=true;$("pauseOv").hidden=true;$("endOv").hidden=true;reset();$("startOv").hidden=false;obGo(0);showStartRecord();titleStart()}
 $("quitBtn").onclick=goHome;$("homeBtn").onclick=goHome;
+$("restartBtn").onclick=()=>{$("pauseOv").hidden=true;start()};
+$("settleBtn").onclick=()=>{G.paused=false;G.running=true;$("pauseOv").hidden=true;endGame()};
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&G.running)pauseGame()});
 document.addEventListener("pointerdown",()=>{if(!$("startOv").hidden&&!TITLE.on&&!G.running){audioInit();if(A.ctx.state==="suspended")A.ctx.resume();titleStart()}},{once:false});
 /* =============== press feedback =============== */
